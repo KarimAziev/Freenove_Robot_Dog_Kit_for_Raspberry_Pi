@@ -177,7 +177,6 @@ class Server:
         operation_counter = 0
         while True:
             try:
-                global operation_counter
                 allData = self.connection1.recv(1024).decode('utf-8')
                 operation_counter += 1
                 if operation_counter % 10 == 0:
