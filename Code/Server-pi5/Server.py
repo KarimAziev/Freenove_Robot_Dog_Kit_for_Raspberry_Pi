@@ -93,7 +93,7 @@ class Server:
         self.instruction.start()
 
     def send_data(self, connect, data):
-        logger.info("sending data", data)
+        logger.info(f"sending data {data}")
         try:
             connect.send(data.encode('utf-8'))
         except Exception as e:
