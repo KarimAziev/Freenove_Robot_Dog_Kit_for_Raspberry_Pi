@@ -1,5 +1,6 @@
 #coding:utf-8
-import time
+
+
 class Incremental_PID:
     ''' PID controller'''
     def __init__(self,P=0.0,I=0.0,D=0.0):
@@ -17,7 +18,7 @@ class Incremental_PID:
     def PID_compute(self,feedback_val):
         error = self.setPoint - feedback_val
         self.P_error = self.Kp * error
-        self.I_error += error 
+        self.I_error += error
         self.D_error = self.Kd * (error - self.last_error)
         if (self.I_error < -self.I_saturation ):
             self.I_error = -self.I_saturation
@@ -38,5 +39,3 @@ class Incremental_PID:
 
     def setI_saturation(self,saturation_val):
         self.I_saturation = saturation_val
-
-    

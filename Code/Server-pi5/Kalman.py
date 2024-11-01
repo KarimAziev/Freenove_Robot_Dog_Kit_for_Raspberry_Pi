@@ -1,4 +1,5 @@
-import time
+
+
 class Kalman_filter:
     def __init__(self,Q,R):
         self.Q = Q
@@ -10,7 +11,7 @@ class Kalman_filter:
         self.ADC_OLD_Value = 0
         self.Z_k = 0
         self.kalman_adc_old=0
-        
+
     def kalman(self,ADC_Value):
         self.Z_k = ADC_Value
         if (abs(self.kalman_adc_old-ADC_Value)>=60):
