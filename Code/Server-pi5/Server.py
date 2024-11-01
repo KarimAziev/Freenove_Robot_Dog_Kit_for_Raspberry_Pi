@@ -180,7 +180,8 @@ class Server:
                 global operation_counter
                 allData = self.connection1.recv(1024).decode('utf-8')
                 operation_counter += 1
-                logger.info(f"receive_instruction allData {allData}")
+                if operation_counter % 10 == 0:
+                    logging.info(f"Received {operation_counter} operations")
             except Exception as e:
                 logger.error(e)
                 if self.tcp_flag:
