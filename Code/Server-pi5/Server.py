@@ -129,7 +129,6 @@ class Server:
             try:
                 lenFrame = len(output.frame)
                 lengthBin = struct.pack('<I', lenFrame)
-                logger.info("Frame length: %d" % lenFrame)
                 self.connection.write(lengthBin)
                 self.connection.write(frame)
             except Exception as e:
@@ -174,10 +173,13 @@ class Server:
             return
 
         self.server_socket1.close()
-
+        global operation_counter
+        operation_counter = 0
         while True:
             try:
+                global operation_counter
                 allData = self.connection1.recv(1024).decode('utf-8')
+                operation_counter += 1
                 logger.info(f"receive_instruction allData {allData}")
             except Exception as e:
                 logger.error(e)
