@@ -149,7 +149,7 @@ class Control:
                     self.move_timeout=time.time()
 
                 if self.move_count < 180:
-                    logging.info("Executing control logic...")
+
                     if (time.time()-self.timeout)>10 and self.timeout!=0 and self.relax_flag==False and self.order[0] == '':
                         self.timeout=time.time()
                         self.relax_flag=True
