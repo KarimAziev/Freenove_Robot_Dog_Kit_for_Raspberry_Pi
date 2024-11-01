@@ -20,15 +20,12 @@ from ADS7830 import ADS7830
 from Ultrasonic import Ultrasonic
 from Command import COMMAND as cmd
 import logging
-from logging.handlers import RotatingFileHandler
+
 
 # Setup logging
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('Server')
-handler = RotatingFileHandler("server.log", maxBytes=5000000, backupCount=2)
-handler.setFormatter(logging.Formatter(LOG_FORMAT))
-logger.addHandler(handler)
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -109,7 +106,7 @@ class Server:
             self.connection, self.client_address = self.server_socket.accept()
             self.connection = self.connection.makefile('wb')
         except Exception as e:
-            logger.exception("Error accepting socket connection", exc_info=e)
+            logger.exception(f"Error accepting socket connection {e}")
             return
 
         self.server_socket.close()
@@ -183,7 +180,7 @@ class Server:
                 allData = self.connection1.recv(1024).decode('utf-8')
                 logger.info(f"receive_instruction allData {allData}")
             except Exception as e:
-                logger.exception(e, exc_info=True)
+                logger.error(e)
                 if self.tcp_flag:
                     if max(self.battery_voltage) < 6.4:
                         self.turn_off_server()
