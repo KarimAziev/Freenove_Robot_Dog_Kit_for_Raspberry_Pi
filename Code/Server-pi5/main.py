@@ -7,8 +7,8 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtGui
 import threading
-from .Server import Server
-from .Thread import stop_thread
+from Server import Server
+from Thread import stop_thread
 
 
 logging.basicConfig(level=logging.DEBUG,
