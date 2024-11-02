@@ -176,7 +176,6 @@ class Control:
             self.calibration_angle[i][2] -= self.angle[i][2]
 
     def run(self):
-        logging.info('Running Control Logic...')
         if self.check_point():
             try:
                 for i in range(4):
@@ -215,7 +214,6 @@ class Control:
                     self.servo.setServoAngle(8 + i * 3, self.angle[i + 2][0])
                     self.servo.setServoAngle(9 + i * 3, self.angle[i + 2][1])
                     self.servo.setServoAngle(10 + i * 3, self.angle[i + 2][2])
-                logging.info('Servo angles set successfully')
             except Exception as e:
                 logging.error(f'Error running servo control logic: {e}', exc_info=True)
         else:
@@ -230,7 +228,6 @@ class Control:
             )
             if leg_length[i] > 130 or leg_length[i] < 25:
                 flag = False
-        logging.info(f'Leg lengths: {leg_length}, flag {flag}')
         return flag
 
     def condition(self):
