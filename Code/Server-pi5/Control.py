@@ -346,6 +346,7 @@ class Control:
                         elif self.order[1] == "save":
                             self.save_to_txt(self.calibration_point, 'point')
                             self.stop()
+                        self.order = ['', '', '', '', '']
                     elif self.order[0] == cmd.CMD_BALANCE and self.order[1] == '1':
                         self.stop_condition_thread = True
                         Thread_IMU = threading.Thread(target=self.IMU6050)
