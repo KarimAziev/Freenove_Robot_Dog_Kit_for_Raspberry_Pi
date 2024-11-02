@@ -10,10 +10,12 @@ import threading
 from Server import Server
 from typing import Optional
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[logging.StreamHandler(sys.stdout)])
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
 
 
 class MyWindow(QMainWindow, Ui_server):
@@ -58,7 +60,9 @@ class MyWindow(QMainWindow, Ui_server):
 
         self.video_thread = threading.Thread(target=self.server.transmission_video)
         self.video_thread.start()
-        self.instruction_thread = threading.Thread(target=self.server.receive_instruction)
+        self.instruction_thread = threading.Thread(
+            target=self.server.receive_instruction
+        )
         self.instruction_thread.start()
         logging.info("Server threads started")
 
@@ -76,11 +80,12 @@ class MyWindow(QMainWindow, Ui_server):
         logging.info("Server threads and sockets shut down")
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
-        logging.info("Close event triggered")
+        logging.info("Close event triggered %s", a0)
         self.stop_server_threads()
         if self.user_ui:
             QCoreApplication.instance().exit()
             logging.info("Application exited")
+
 
 if __name__ == '__main__':
     user_ui = True
@@ -93,7 +98,6 @@ if __name__ == '__main__':
         elif o == '-n':
             logging.info("Non-UI mode selected")
             user_ui = False
-
 
     server = Server()
 

@@ -4,8 +4,9 @@ from typing import List
 
 logger = logging.getLogger('ADS7830')
 
+
 class ADS7830:
-    def __init__(self, bus_number: int = 1, address: int = 0x4b):
+    def __init__(self, bus_number: int = 1, address: int = 0x4B):
         """Initialize the ADS7830 ADC.
 
         :param bus_number: I2C bus number
@@ -15,7 +16,9 @@ class ADS7830:
         self.address = address
         # ADS7830 Command Set for Single-Ended Inputs
         self.ADS7830_CMD = 0x84
-        logger.info(f"ADS7830 initialized on I2C bus {bus_number}, address {hex(address)}")
+        logger.info(
+            f"ADS7830 initialized on I2C bus {bus_number}, address {hex(address)}"
+        )
 
     def read_adc(self, channel: int) -> int:
         """Read ADC value from the specified channel.
@@ -27,7 +30,9 @@ class ADS7830:
             raise ValueError("Channel must be between 0 and 7")
 
         # Build the command for the ADC
-        command_set = self.ADS7830_CMD | ((((channel << 2) | (channel >> 1)) & 0x07) << 4)
+        command_set = self.ADS7830_CMD | (
+            (((channel << 2) | (channel >> 1)) & 0x07) << 4
+        )
         try:
             # Write command to the ADS7830
             self.bus.write_byte(self.address, command_set)
@@ -56,13 +61,19 @@ class ADS7830:
         MAX_ADC_VALUE = 255.0
         REF_VOLTAGE = 5.0
         VOLTAGE_DIVIDER_RATIO = 2
-        battery_voltage = (median_adc / MAX_ADC_VALUE) * REF_VOLTAGE * VOLTAGE_DIVIDER_RATIO
+        battery_voltage = (
+            (median_adc / MAX_ADC_VALUE) * REF_VOLTAGE * VOLTAGE_DIVIDER_RATIO
+        )
         battery_voltage = round(battery_voltage, 2)
-        logger.info(f"Calculated battery voltage from channel {channel}: {battery_voltage} V")
+        logger.info(
+            f"Calculated battery voltage from channel {channel}: {battery_voltage} V"
+        )
         return battery_voltage
+
 
 if __name__ == '__main__':
     import time
+
     logging.basicConfig(level=logging.INFO)
     adc = ADS7830()
     try:

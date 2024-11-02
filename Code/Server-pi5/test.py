@@ -1,82 +1,95 @@
 import time
 from Ultrasonic import Ultrasonic
 
-ultrasonic=Ultrasonic()
+ultrasonic = Ultrasonic()
+
 
 def test_Ultrasonic():
     try:
         while True:
-            data=ultrasonic.get_distance()   #Get the value
-            print ("Obstacle distance is "+str(data)+"CM")
+            data = ultrasonic.get_distance()  # Get the value
+            print("Obstacle distance is " + str(data) + "CM")
             time.sleep(1)
     except KeyboardInterrupt:
-        print ("\nEnd of program")
+        print("\nEnd of program")
+
 
 from Servo import Servo
 
-servo=Servo()
+
+servo = Servo()
+
 
 def test_Servo():
     try:
         for i in range(90):
-            servo.setServoAngle(4,90-i)
-            servo.setServoAngle(7,90-i)
-            servo.setServoAngle(8,90+i)
-            servo.setServoAngle(11,90+i)
+            servo.setServoAngle(4, 90 - i)
+            servo.setServoAngle(7, 90 - i)
+            servo.setServoAngle(8, 90 + i)
+            servo.setServoAngle(11, 90 + i)
             time.sleep(0.01)
         for i in range(90):
-            servo.setServoAngle(2,90-i)
-            servo.setServoAngle(5,90-i)
-            servo.setServoAngle(10,90+i)
-            servo.setServoAngle(13,90+i)
+            servo.setServoAngle(2, 90 - i)
+            servo.setServoAngle(5, 90 - i)
+            servo.setServoAngle(10, 90 + i)
+            servo.setServoAngle(13, 90 + i)
             time.sleep(0.01)
         for i in range(60):
-            servo.setServoAngle(3,90-i)
-            servo.setServoAngle(6,90-i)
-            servo.setServoAngle(9,90+i)
-            servo.setServoAngle(12,90+i)
+            servo.setServoAngle(3, 90 - i)
+            servo.setServoAngle(6, 90 - i)
+            servo.setServoAngle(9, 90 + i)
+            servo.setServoAngle(12, 90 + i)
             time.sleep(0.01)
-        print ("\nEnd of program")
+        print("\nEnd of program")
     except KeyboardInterrupt:
-        print ("\nEnd of program")
+        print("\nEnd of program")
 
 
 from ADS7830 import *
-adc=ADS7830()
+
+adc = ADS7830()
+
+
 def test_Adc():
     try:
         while True:
-            Power=adc.read_adc(0)/255.0*5.0*2
-            print ("The battery voltage is "+str(Power)+"V")
+            Power = adc.read_adc(0) / 255.0 * 5.0 * 2
+            print("The battery voltage is " + str(Power) + "V")
             time.sleep(1)
-            print ('\n')
+            print('\n')
     except KeyboardInterrupt:
-        print ("\nEnd of program")
+        print("\nEnd of program")
+
 
 from Buzzer import BuzzerController
-buzzer=BuzzerController()
+
+buzzer = BuzzerController()
+
+
 def test_Buzzer():
     try:
         buzzer.run('1')
         time.sleep(1)
-        print ("1S")
+        print("1S")
         time.sleep(1)
-        print ("2S")
+        print("2S")
         time.sleep(1)
-        print ("3S")
+        print("3S")
         buzzer.run('0')
-        print ("\nEnd of program")
+        print("\nEnd of program")
     except KeyboardInterrupt:
         buzzer.run('0')
-        print ("\nEnd of program")
+        print("\nEnd of program")
+
 
 # Main program logic follows:
 if __name__ == '__main__':
 
-    print ('Program is starting ... ')
+    print('Program is starting ... ')
     import sys
-    if len(sys.argv)<2:
-        print ("Parameter error: Please assign the device")
+
+    if len(sys.argv) < 2:
+        print("Parameter error: Please assign the device")
         exit()
     elif sys.argv[1] == 'Ultrasonic':
         test_Ultrasonic()

@@ -10,5 +10,6 @@ class BuzzerController:
         else:
             buzzer.off()
 
+
 if __name__ == '__main__':
     pass

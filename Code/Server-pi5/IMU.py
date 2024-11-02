@@ -1,10 +1,10 @@
-#coding:utf-8
 import time
 import math
 from Kalman import Kalman_Filter
 from mpu6050 import mpu6050
 from typing import Tuple
 import logging
+
 
 class IMU:
     def __init__(self):
@@ -92,7 +92,9 @@ class IMU:
 
         accel_data['x'] = sum_accel_x / 100.0
         accel_data['y'] = sum_accel_y / 100.0
-        accel_data['z'] = sum_accel_z / 100.0 - 9.8  # Assuming sensor is stationary and aligned
+        accel_data['z'] = (
+            sum_accel_z / 100.0 - 9.8
+        )  # Assuming sensor is stationary and aligned
 
         gyro_data['x'] = sum_gyro_x / 100.0
         gyro_data['y'] = sum_gyro_y / 100.0
@@ -100,7 +102,7 @@ class IMU:
 
         return accel_data, gyro_data
 
-    def imuUpdate(self) -> Tuple[float, float, float]:
+    def imu_update(self) -> Tuple[float, float, float]:
         """
         Updates the IMU state by reading sensor data, applying Kalman filtering,
         and performing sensor fusion to compute pitch, roll, and yaw.
@@ -120,12 +122,24 @@ class IMU:
             return self.pitch, self.roll, self.yaw
 
         # Apply Kalman filter and subtract bias errors
-        ax = self.kalman_filter_AX.kalman(accel_data['x'] - self.Error_value_accel_data['x'])
-        ay = self.kalman_filter_AY.kalman(accel_data['y'] - self.Error_value_accel_data['y'])
-        az = self.kalman_filter_AZ.kalman(accel_data['z'] - self.Error_value_accel_data['z'])
-        gx = self.kalman_filter_GX.kalman(gyro_data['x'] - self.Error_value_gyro_data['x'])
-        gy = self.kalman_filter_GY.kalman(gyro_data['y'] - self.Error_value_gyro_data['y'])
-        gz = self.kalman_filter_GZ.kalman(gyro_data['z'] - self.Error_value_gyro_data['z'])
+        ax = self.kalman_filter_AX.kalman(
+            accel_data['x'] - self.Error_value_accel_data['x']
+        )
+        ay = self.kalman_filter_AY.kalman(
+            accel_data['y'] - self.Error_value_accel_data['y']
+        )
+        az = self.kalman_filter_AZ.kalman(
+            accel_data['z'] - self.Error_value_accel_data['z']
+        )
+        gx = self.kalman_filter_GX.kalman(
+            gyro_data['x'] - self.Error_value_gyro_data['x']
+        )
+        gy = self.kalman_filter_GY.kalman(
+            gyro_data['y'] - self.Error_value_gyro_data['y']
+        )
+        gz = self.kalman_filter_GZ.kalman(
+            gyro_data['z'] - self.Error_value_gyro_data['z']
+        )
 
         # Normalize accelerometer measurement
         norm = math.sqrt(ax * ax + ay * ay + az * az)
@@ -138,12 +152,17 @@ class IMU:
         # Estimated direction of gravity and vector perpendicular to magnetic flux
         vx = 2 * (self.q1 * self.q3 - self.q0 * self.q2)
         vy = 2 * (self.q0 * self.q1 + self.q2 * self.q3)
-        vz = self.q0 * self.q0 - self.q1 * self.q1 - self.q2 * self.q2 + self.q3 * self.q3
+        vz = (
+            self.q0 * self.q0
+            - self.q1 * self.q1
+            - self.q2 * self.q2
+            + self.q3 * self.q3
+        )
 
         # Error is the cross product between estimated and measured direction of gravity
-        ex = (ay * vz - az * vy)
-        ey = (az * vx - ax * vz)
-        ez = (ax * vy - ay * vx)
+        ex = ay * vz - az * vy
+        ey = az * vx - ax * vz
+        ez = ax * vy - ay * vx
 
         # Integral feedback
         self.exInt += ex * self.Ki * dt
@@ -162,7 +181,12 @@ class IMU:
         self.q3 += (self.q0 * gz + self.q1 * gy - self.q2 * gx) * halfT
 
         # Normalize quaternion
-        norm = math.sqrt(self.q0 * self.q0 + self.q1 * self.q1 + self.q2 * self.q2 + self.q3 * self.q3)
+        norm = math.sqrt(
+            self.q0 * self.q0
+            + self.q1 * self.q1
+            + self.q2 * self.q2
+            + self.q3 * self.q3
+        )
         if norm == 0:
             norm = 1e-5  # Prevent division by zero
         self.q0 /= norm
@@ -171,11 +195,24 @@ class IMU:
         self.q3 /= norm
 
         # Compute Euler angles
-        self.pitch = math.degrees(math.asin(-2 * self.q1 * self.q3 + 2 * self.q0 * self.q2))
-        self.roll = math.degrees(math.atan2(2 * self.q2 * self.q3 + 2 * self.q0 * self.q1,
-                                            -2 * self.q1 * self.q1 - 2 * self.q2 * self.q2 + 1))
-        self.yaw = math.degrees(math.atan2(2 * (self.q1 * self.q2 + self.q0 * self.q3),
-                                           self.q0 * self.q0 + self.q1 * self.q1 - self.q2 * self.q2 - self.q3 * self.q3))
+        self.pitch = math.degrees(
+            math.asin(-2 * self.q1 * self.q3 + 2 * self.q0 * self.q2)
+        )
+        self.roll = math.degrees(
+            math.atan2(
+                2 * self.q2 * self.q3 + 2 * self.q0 * self.q1,
+                -2 * self.q1 * self.q1 - 2 * self.q2 * self.q2 + 1,
+            )
+        )
+        self.yaw = math.degrees(
+            math.atan2(
+                2 * (self.q1 * self.q2 + self.q0 * self.q3),
+                self.q0 * self.q0
+                + self.q1 * self.q1
+                - self.q2 * self.q2
+                - self.q3 * self.q3,
+            )
+        )
 
         return self.pitch, self.roll, self.yaw
 

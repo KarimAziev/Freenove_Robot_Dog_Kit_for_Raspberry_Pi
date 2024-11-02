@@ -55,17 +55,15 @@ class Server:
         self.server_socket1 = socket.socket()
         self.connection = None
 
-
         self.stop_event = Event()
         self.operation_counter = 0
         self.lock = Lock()
 
     def get_interface_ip(self) -> str:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        ip_addr = socket.inet_ntoa(fcntl.ioctl(s.fileno(),
-                                               0x8915,
-                                               struct.pack('256s', b'wlan0'[:15])
-                                               )[20:24])
+        ip_addr = socket.inet_ntoa(
+            fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', b'wlan0'[:15]))[20:24]
+        )
         s.close()
         return ip_addr
 
@@ -179,7 +177,9 @@ class Server:
     def battery_reminder(self):
         # Adjusted the voltage threshold to appropriate values
         if max(self.battery_voltage) < 6.4:
-            logger.error("Battery voltage is too low. Please recharge or replace the batteries.")
+            logger.error(
+                "Battery voltage is too low. Please recharge or replace the batteries."
+            )
             self.control.relax(True)
             logger.info("Server shutting down due to low battery.")
             self.turn_off_server()
@@ -208,7 +208,9 @@ class Server:
                 all_data_bytes = self.connection1.recv(1024)
                 all_data = all_data_bytes.decode('utf-8')
                 if not all_data:
-                    logger.warning("Received empty data, client might have disconnected")
+                    logger.warning(
+                        "Received empty data, client might have disconnected"
+                    )
                     break
 
                 with self.lock:
