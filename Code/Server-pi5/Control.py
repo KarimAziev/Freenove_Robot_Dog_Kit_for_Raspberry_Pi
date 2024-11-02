@@ -321,6 +321,7 @@ class Control:
                         self.attitude_flag = True
                         self.attitude(self.order[1], self.order[2], self.order[3])
                     elif self.order[0] == cmd.CMD_CALIBRATION:
+                        logging.info(f"CMD_CALIBRATION order {self.order}")
                         with self.lock:
                             self.move_count = 0
                         if self.order[1] == "one":
