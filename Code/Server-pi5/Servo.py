@@ -30,9 +30,6 @@ class Servo:
             angle = self.angle_max
         pulse = self.map(angle, 0, 180, 102, 512)
         self.pwm.setPWM(channel, 0, int(pulse))
-        logger.info(
-            f"Set servo channel {channel} to angle {angle} (pulse {int(pulse)})"
-        )
 
 
 if __name__ == '__main__':
