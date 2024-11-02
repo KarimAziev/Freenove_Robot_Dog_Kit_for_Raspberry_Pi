@@ -24,11 +24,13 @@ class ADS7830:
         return data
 
     def power(self, channel):
-        data = ['', '', '', '', '', '', '', '', '']
+        readings: List[int] = []
         for i in range(9):
-            data[i] = self.read_adc(channel)
-        data.sort()
-        battery_voltage = data[4] / 255.0 * 5.0 * 2
+            adc_value = self.read_adc(channel)
+            readings.append(adc_value)
+            logger.debug(f"Reading {i+1}/9 from channel {channel}: {adc_value}")
+        readings.sort()
+        battery_voltage = readings[4] / 255.0 * 5.0 * 2
         return battery_voltage
 
 
