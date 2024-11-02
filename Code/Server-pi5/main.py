@@ -12,6 +12,7 @@ from typing import Optional
 
 
 logging.basicConfig(
+    filename='main.log',
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)],
@@ -33,6 +34,7 @@ class MyWindow(QMainWindow, Ui_server):
             self.setupUi(self)
             self.pushButton_On_And_Off.clicked.connect(self.on_and_off_server)
             logging.debug("UI setup and button clicked signal connected")
+            self.on_and_off_server()
 
         if self.start_tcp:
             self.start_server_threads()

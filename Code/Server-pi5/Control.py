@@ -16,11 +16,6 @@ class Control:
         Initializes the Control class, setting up logging and all necessary components such as IMU, Servo, and PID.
         Also initiates the necessary variables for controlling servo angles, points, calibration data, safety locks, and flags.
         """
-        logging.basicConfig(
-            filename='control.log',
-            level=logging.DEBUG,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-        )
 
         logging.info('Initializing Control Class')
         self.imu = IMU()
