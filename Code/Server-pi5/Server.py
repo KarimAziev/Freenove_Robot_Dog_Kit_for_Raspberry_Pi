@@ -177,6 +177,7 @@ class Server:
     def battery_reminder(self):
         # Adjusted the voltage threshold to appropriate values
         if max(self.battery_voltage) < 6.4:
+            logger.info(f"battery_voltage", self.battery_voltage)
             logger.error(
                 "Battery voltage is too low. Please recharge or replace the batteries."
             )

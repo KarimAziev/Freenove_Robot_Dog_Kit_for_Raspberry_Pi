@@ -13,7 +13,7 @@ class Incremental_PID:
         self.I_saturation = 10.0
         self.output = 0.0
 
-    def PID_compute(self, feedback_val):
+    def PID_compute(self, feedback_val: float):
         error = self.setPoint - feedback_val
         self.P_error = self.Kp * error
         self.I_error += error
