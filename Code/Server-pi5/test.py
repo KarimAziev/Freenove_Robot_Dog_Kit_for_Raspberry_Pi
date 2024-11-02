@@ -1,39 +1,8 @@
 import time
-from Led import *
-led=Led()
-def test_Led():
-    if(led.Ledsupported == 1):
-        try:
-            #Red wipe
-            print ("\nRed wipe")
-            led.colorWipe(led.strip, Color(255, 0, 0)) 
-            time.sleep(1)
+from Ultrasonic import Ultrasonic
 
-            #Green wipe
-            print ("\nGreen wipe")
-            led.colorWipe(led.strip, Color(0, 255, 0)) 
-            time.sleep(1)
+ultrasonic=Ultrasonic()
 
-            #Blue wipe
-            print ("\nBlue wipe")
-            led.colorWipe(led.strip, Color(0, 0, 255)) 
-            time.sleep(1)
-
-            #White wipe
-            print ("\nWhite wipe")
-            led.colorWipe(led.strip, Color(255, 255, 255)) 
-            time.sleep(1)
-        
-            led.colorWipe(led.strip, Color(0, 0, 0))   #turn off the light
-            print ("\nEnd of program")
-        except KeyboardInterrupt:
-            led.colorWipe(led.strip, Color(0, 0, 0))   #turn off the light
-            print ("\nEnd of program")
-    else:
-        print ("\nEnd of program")
-
-from Ultrasonic import *
-ultrasonic=Ultrasonic()                
 def test_Ultrasonic():
     try:
         while True:
@@ -43,8 +12,10 @@ def test_Ultrasonic():
     except KeyboardInterrupt:
         print ("\nEnd of program")
 
-from Servo import *
+from Servo import Servo
+
 servo=Servo()
+
 def test_Servo():
     try:
         for i in range(90):
@@ -65,25 +36,25 @@ def test_Servo():
             servo.setServoAngle(9,90+i)
             servo.setServoAngle(12,90+i)
             time.sleep(0.01)
-        print ("\nEnd of program")      
+        print ("\nEnd of program")
     except KeyboardInterrupt:
         print ("\nEnd of program")
-        
-        
+
+
 from ADS7830 import *
 adc=ADS7830()
 def test_Adc():
     try:
         while True:
-            Power=adc.readAdc(0)/255.0*5.0*2
+            Power=adc.read_adc(0)/255.0*5.0*2
             print ("The battery voltage is "+str(Power)+"V")
             time.sleep(1)
             print ('\n')
     except KeyboardInterrupt:
         print ("\nEnd of program")
 
-from Buzzer import *
-buzzer=Buzzer()
+from Buzzer import BuzzerController
+buzzer=BuzzerController()
 def test_Buzzer():
     try:
         buzzer.run('1')
@@ -98,7 +69,7 @@ def test_Buzzer():
     except KeyboardInterrupt:
         buzzer.run('0')
         print ("\nEnd of program")
-     
+
 # Main program logic follows:
 if __name__ == '__main__':
 
@@ -106,20 +77,12 @@ if __name__ == '__main__':
     import sys
     if len(sys.argv)<2:
         print ("Parameter error: Please assign the device")
-        exit() 
-    if sys.argv[1] == 'Led':
-        test_Led()
+        exit()
     elif sys.argv[1] == 'Ultrasonic':
         test_Ultrasonic()
-    elif sys.argv[1] == 'Servo': 
-        test_Servo()               
-    elif sys.argv[1] == 'ADC':   
-        test_Adc()  
-    elif sys.argv[1] == 'Buzzer':   
-        test_Buzzer() 
-
-
-        
-        
-        
-        
+    elif sys.argv[1] == 'Servo':
+        test_Servo()
+    elif sys.argv[1] == 'ADC':
+        test_Adc()
+    elif sys.argv[1] == 'Buzzer':
+        test_Buzzer()

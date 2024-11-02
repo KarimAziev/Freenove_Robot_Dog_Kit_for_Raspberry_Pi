@@ -1,9 +1,10 @@
 #coding:utf-8
 import time
 import math
-from Kalman import Kalman_filter
+from Kalman import Kalman_Filter
 from mpu6050 import mpu6050
 from typing import Tuple
+import logging
 
 class IMU:
     def __init__(self):
@@ -40,13 +41,13 @@ class IMU:
         self.sensor.set_gyro_range(mpu6050.GYRO_RANGE_250DEG)
 
         # Kalman filters for accelerometer and gyroscope data
-        self.kalman_filter_AX = Kalman_filter(0.001, 0.1)
-        self.kalman_filter_AY = Kalman_filter(0.001, 0.1)
-        self.kalman_filter_AZ = Kalman_filter(0.001, 0.1)
+        self.kalman_filter_AX = Kalman_Filter(0.001, 0.1)
+        self.kalman_filter_AY = Kalman_Filter(0.001, 0.1)
+        self.kalman_filter_AZ = Kalman_Filter(0.001, 0.1)
 
-        self.kalman_filter_GX = Kalman_filter(0.001, 0.1)
-        self.kalman_filter_GY = Kalman_filter(0.001, 0.1)
-        self.kalman_filter_GZ = Kalman_filter(0.001, 0.1)
+        self.kalman_filter_GX = Kalman_Filter(0.001, 0.1)
+        self.kalman_filter_GY = Kalman_Filter(0.001, 0.1)
+        self.kalman_filter_GZ = Kalman_Filter(0.001, 0.1)
 
         # Calculate bias errors by averaging over 100 samples
         self.Error_value_accel_data, self.Error_value_gyro_data = self.average_filter()
@@ -72,7 +73,7 @@ class IMU:
         gyro_data = {'x': 0.0, 'y': 0.0, 'z': 0.0}
 
         # Collect 100 samples to calculate the average for bias correction
-        for i in range(100):
+        for _ in range(100):
             try:
                 accel = self.sensor.get_accel_data()
                 gyro = self.sensor.get_gyro_data()
@@ -114,8 +115,8 @@ class IMU:
         try:
             accel_data = self.sensor.get_accel_data()
             gyro_data = self.sensor.get_gyro_data()
-        except Exception as e:
-            print(f"Sensor read error: {e}")
+        except Exception:
+            logging.exception("Sensor read error")
             return self.pitch, self.roll, self.yaw
 
         # Apply Kalman filter and subtract bias errors
