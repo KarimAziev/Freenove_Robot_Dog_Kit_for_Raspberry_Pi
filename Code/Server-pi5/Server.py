@@ -21,8 +21,8 @@ from Command import COMMAND as cmd
 
 # Setup logging
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('Server')
+logger.setLevel(logging.DEBUG)
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -164,7 +164,6 @@ class Server:
         try:
             for i in range(5):
                 voltage = self.adc.power(0)
-                logger.info(f"voltage {voltage}")
                 self.battery_voltage[i] = round(voltage, 2)
             max_voltage = max(self.battery_voltage)
             command = f"{cmd.CMD_POWER}#{max_voltage}\n"
@@ -178,7 +177,6 @@ class Server:
     def battery_reminder(self):
         # Adjusted the voltage threshold to appropriate values
         if max(self.battery_voltage) < 6.4:
-            logger.info(f"battery_voltage {self.battery_voltage}")
             logger.error(
                 "Battery voltage is too low. Please recharge or replace the batteries."
             )
