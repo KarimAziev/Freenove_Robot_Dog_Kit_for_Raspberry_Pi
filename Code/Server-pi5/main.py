@@ -49,10 +49,12 @@ class ServerController:
         self.server.stop_event.set()
 
         if self.video_thread and self.video_thread.is_alive():
+            logger.info("Stopping video thread")
             self.video_thread.join()
             logger.info("Video thread stopped")
 
         if self.instruction_thread and self.instruction_thread.is_alive():
+            logger.info("Stopping instruction thread")
             self.instruction_thread.join()
             logger.info("Instruction thread stopped")
 

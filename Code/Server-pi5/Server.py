@@ -19,10 +19,8 @@ from ADS7830 import ADS7830
 from Ultrasonic import Ultrasonic
 from Command import COMMAND as cmd
 
-# Setup logging
-LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
-logger = logging.getLogger('Server')
-logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(__name__)
 
 
 class StreamingOutput(io.BufferedIOBase):
