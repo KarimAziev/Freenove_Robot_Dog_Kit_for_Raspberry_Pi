@@ -102,53 +102,28 @@ class Control:
         """
         try:
             a = math.pi / 2 - math.atan2(z, y)
+
             l23 = math.sqrt(
                 (z - l1 * math.cos(a)) ** 2 + (y - l1 * math.sin(a)) ** 2 + x**2
             )
-            w = x / l23
-            v = (l2**2 + l23**2 - l3**2) / (2 * l2 * l23)
-            b = math.asin(round(w, 2)) - math.acos(round(v, 2))
-            c = math.pi - math.acos(round((l2**2 + l3**2 - l23**2) / (2 * l3 * l2), 2))
-            logging.debug(
-                f'Coordinate to Angle calculation: [{round(math.degrees(a))}, {round(math.degrees(b))}, {round(math.degrees(c))}]'
+
+            w = self.restriction(x / l23, -1, 1)
+            v = self.restriction((l2**2 + l23**2 - l3**2) / (2 * l2 * l23), -1, 1)
+
+            b = math.asin(w) - math.acos(v)
+            c = math.pi - math.acos(
+                self.restriction((l2**2 + l3**2 - l23**2) / (2 * l3 * l2), -1, 1)
             )
+
             return (
                 round(math.degrees(a)),
                 round(math.degrees(b)),
                 round(math.degrees(c)),
             )
+
         except Exception as e:
             logging.error(f'Error in coordinate_to_angle: {e}', exc_info=True)
             return 0, 0, 0
-
-    def angle_to_coordinate(
-        self, a, b, c, l1=23, l2=55, l3=55
-    ) -> tuple[float, float, float]:
-        """
-        Converts servo angles back into XYZ coordinates.
-
-        Args:
-            a, b, c (int): Servo angles.
-            l1, l2, l3 (int): The lengths of the three segments.
-
-        Returns:
-            tuple[float, float, float]: XYZ coordinates.
-        """
-        a = math.radians(a)
-        b = math.radians(b)
-        c = math.radians(c)
-        x = l3 * math.sin(b + c) + l2 * math.sin(b)
-        y = (
-            l3 * math.sin(a) * math.cos(b + c)
-            + l2 * math.sin(a) * math.cos(b)
-            + l1 * math.sin(a)
-        )
-        z = (
-            l3 * math.cos(a) * math.cos(b + c)
-            + l2 * math.cos(a) * math.cos(b)
-            + l1 * math.cos(a)
-        )
-        return x, y, z
 
     def calibration(self):
         """
