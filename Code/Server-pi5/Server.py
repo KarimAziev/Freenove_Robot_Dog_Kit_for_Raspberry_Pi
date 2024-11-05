@@ -120,6 +120,7 @@ class Server:
     def transmission_video(self):
         logger.info("Starting video transmission thread")
         try:
+            logger.info("conn_socket accepting")
             conn_socket, _ = self.server_socket.accept()
             logger.info("conn_socket accepted")
             conn_socket.settimeout(2)
