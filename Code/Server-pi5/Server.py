@@ -120,16 +120,27 @@ class Server:
     def transmission_video(self):
         logger.info("Starting video transmission thread")
         try:
-            logger.info("conn_socket accepting")
-            conn_socket, _ = self.server_socket.accept()
-            logger.info("conn_socket accepted")
-            conn_socket.settimeout(2)
-            self.connection = conn_socket.makefile('wb')
-        except Exception as e:
-            logger.exception(f"Error accepting socket connection: {e}")
-            return
+            while not self.stop_event.is_set():
+                try:
+                    logger.info("Waiting for video connection...")
+                    conn_socket, _ = self.server_socket.accept()
+                    self.connection = conn_socket.makefile('wb')
+                    break
+                except socket.timeout:
+                    if self.stop_event.is_set():
+                        logger.info(
+                            "Stopping video transmission thread due to stop event"
+                        )
+                        return
+                except Exception as e:
+                    logger.exception(f"Error accepting video connection: {e}")
+                    return
 
-        self.server_socket.close()
+        finally:
+            self.server_socket.close()
+
+        if self.connection is None:
+            return
         logger.info("Video socket connected")
 
         camera = Picamera2()
