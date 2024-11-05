@@ -143,12 +143,18 @@ class Server:
                     logger.warning("Frame is empty, skipping...")
                     continue
                 frame = output.frame
+
             try:
                 len_frame = len(frame)
                 length_bin = struct.pack('<I', len_frame)
+
+                if self.stop_event.is_set():
+                    break
+
                 self.connection.write(length_bin)
                 self.connection.write(frame)
                 self.connection.flush()
+
             except Exception as e:
                 logger.exception("Error transmitting frame")
                 break
