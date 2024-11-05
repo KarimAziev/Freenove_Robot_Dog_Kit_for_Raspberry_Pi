@@ -1,6 +1,5 @@
 import logging
 import sys
-import getopt
 import time
 from ui_server import Ui_server
 from PyQt5.QtCore import QCoreApplication
@@ -12,7 +11,6 @@ from typing import Optional
 
 
 logging.basicConfig(
-    filename='main.log',
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
@@ -73,10 +71,10 @@ class MyWindow(QMainWindow, Ui_server):
         self.server.stop_event.set()
         if self.video_thread and self.video_thread.is_alive():
             self.video_thread.join()
-            logging.debug("Video thread stopped")
+            logging.info("Video thread stopped")
         if self.instruction_thread and self.instruction_thread.is_alive():
             self.instruction_thread.join()
-            logging.debug("Instruction thread stopped")
+            logging.info("Instruction thread stopped")
         self.server.turn_off_server()
         logging.info("Server threads and sockets shut down")
 
@@ -89,16 +87,15 @@ class MyWindow(QMainWindow, Ui_server):
 
 
 if __name__ == '__main__':
-    user_ui = True
-    start_tcp = False
-    opts, args = getopt.getopt(sys.argv[1:], "tn")
-    for o, _ in opts:
-        if o == '-t':
-            logging.info("TCP option selected")
-            start_tcp = True
-        elif o == '-n':
-            logging.info("Non-UI mode selected")
-            user_ui = False
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run the application.")
+    parser.add_argument("-n", "--no-tcp", action="store_true", help="Disable TCP")
+    parser.add_argument("-u", "--ui", action="store_true", help="Allow UI")
+
+    args = parser.parse_args()
+    user_ui = args.ui
+    start_tcp = not args.no_tcp
 
     server = Server()
 

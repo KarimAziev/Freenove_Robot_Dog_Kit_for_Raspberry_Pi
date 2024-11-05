@@ -40,7 +40,6 @@ class StreamingOutput(io.BufferedIOBase):
 class Server:
     def __init__(self):
         self.tcp_flag = False
-        # Removed Led module
         self.servo = Servo()
         self.adc = ADS7830()
         self.buzzer = BuzzerController()
