@@ -9,6 +9,7 @@ from typing import Optional
 logging.basicConfig(
     level=logging.DEBUG,
     stream=sys.stdout,
+    format="s%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
 logger = logging.getLogger(__name__)
