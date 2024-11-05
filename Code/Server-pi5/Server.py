@@ -121,6 +121,7 @@ class Server:
         logger.info("Starting video transmission thread")
         try:
             conn_socket, _ = self.server_socket.accept()
+            conn_socket.settimeout(2)
             self.connection = conn_socket.makefile('wb')
         except Exception as e:
             logger.exception(f"Error accepting socket connection: {e}")
