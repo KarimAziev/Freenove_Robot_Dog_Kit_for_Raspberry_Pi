@@ -1,20 +1,20 @@
 import time
+from Servo import Servo
 from Ultrasonic import Ultrasonic
+from Buzzer import BuzzerController
+from ADS7830 import ADS7830
 
 ultrasonic = Ultrasonic()
 
 
-def test_Ultrasonic():
+def test_Ultrasonic(count=10):
     try:
-        while True:
-            data = ultrasonic.get_distance()  # Get the value
+        for _ in range(count):
+            data = ultrasonic.get_distance()
             print("Obstacle distance is " + str(data) + "CM")
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nEnd of program")
-
-
-from Servo import Servo
 
 
 servo = Servo()
@@ -45,14 +45,12 @@ def test_Servo():
         print("\nEnd of program")
 
 
-from ADS7830 import *
-
 adc = ADS7830()
 
 
 def test_Adc():
     try:
-        while True:
+        for _ in range(10):
             Power = adc.read_adc(0) / 255.0 * 5.0 * 2
             print("The battery voltage is " + str(Power) + "V")
             time.sleep(1)
@@ -60,8 +58,6 @@ def test_Adc():
     except KeyboardInterrupt:
         print("\nEnd of program")
 
-
-from Buzzer import BuzzerController
 
 buzzer = BuzzerController()
 
@@ -82,15 +78,19 @@ def test_Buzzer():
         print("\nEnd of program")
 
 
-# Main program logic follows:
 if __name__ == '__main__':
-
     print('Program is starting ... ')
     import sys
 
     if len(sys.argv) < 2:
-        print("Parameter error: Please assign the device")
-        exit()
+        print("Testing servo:")
+        test_Servo()
+        print("Testing ADC:")
+        test_Adc()
+        print("Testing Ultrasonic:")
+        test_Ultrasonic()
+        print("Testing Buzzer:")
+        test_Buzzer()
     elif sys.argv[1] == 'Ultrasonic':
         test_Ultrasonic()
     elif sys.argv[1] == 'Servo':
