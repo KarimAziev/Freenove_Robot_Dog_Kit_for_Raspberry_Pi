@@ -12,6 +12,7 @@ logging.basicConfig(
     format="s%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,15 +49,15 @@ class ServerController:
         self.server.tcp_flag = False
         self.server.stop_event.set()
 
-        if self.video_thread and self.video_thread.is_alive():
-            logger.info("Stopping video thread")
-            self.video_thread.join()
-            logger.info("Video thread stopped")
-
         if self.instruction_thread and self.instruction_thread.is_alive():
             logger.info("Stopping instruction thread")
             self.instruction_thread.join()
             logger.info("Instruction thread stopped")
+
+        if self.video_thread and self.video_thread.is_alive():
+            logger.info("Stopping video thread")
+            self.video_thread.join()
+            logger.info("Video thread stopped")
 
         self.server.turn_off_server()
         logger.info("Server has been shut down gracefully.")

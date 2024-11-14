@@ -238,15 +238,16 @@ class Server:
                 cmd_array = all_data.strip().split('\n')
                 for one_cmd in cmd_array:
                     data = one_cmd.strip().split("#")
-                    logger.info(f"Received instruction: {one_cmd.strip()}")
                     if not data or data[0] == "":
                         continue
 
                     command = data[0]
                     args = data[1:]
+                    logger.info(f"Received instruction: {one_cmd.strip()}")
 
-                    # Process commands
-                    if command == cmd.CMD_BUZZER:
+                    if command == cmd.CMD_POWER:
+                        self.measuring_voltage()
+                    elif command == cmd.CMD_BUZZER:
                         self.buzzer.run(args[0])
                     elif command == cmd.CMD_HEAD:
                         angle = int(args[0])
@@ -255,8 +256,6 @@ class Server:
                         distance = self.sonic.get_distance()
                         response = f"{cmd.CMD_SONIC}#{distance}\n"
                         self.send_data(self.connection1, response)
-                    elif command == cmd.CMD_POWER:
-                        self.measuring_voltage()
                     elif command == cmd.CMD_WORKING_TIME:
                         self.send_working_time()
                     else:
