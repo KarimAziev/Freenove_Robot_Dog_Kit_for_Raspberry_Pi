@@ -1,7 +1,15 @@
 import warnings
 import logging
+from gpiozero.exc import (
+    PWMSoftwareFallback,
+)
 
 logger = logging.getLogger(__name__)
+
+try:
+    from gpiozero.exc import PWMSoftwareFallback
+except ImportError:
+    PWMSoftwareFallback = None
 
 
 class Ultrasonic:
@@ -9,13 +17,11 @@ class Ultrasonic:
 
         self.trigger_pin = trigger_pin
         self.echo_pin = echo_pin
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore", category=UserWarning, message=".*pigpiod.*"
-            )
-            warnings.filterwarnings(
-                "ignore", category=UserWarning, message=".*PWMSoftwareFallback.*"
-            )
+        if PWMSoftwareFallback:
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=PWMSoftwareFallback)
+                self.sensor = self.init_sensor()
+        else:
             self.sensor = self.init_sensor()
 
     def init_sensor(self):
@@ -28,6 +34,7 @@ class Ultrasonic:
                 trigger=self.trigger_pin,
                 max_distance=3,  # 3-meter max range
             )
+
         except Exception as e:
             logger.error(f"Error initializing DistanceSensor: {e}")
             raise
