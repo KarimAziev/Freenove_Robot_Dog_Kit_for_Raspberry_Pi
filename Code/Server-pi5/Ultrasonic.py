@@ -1,81 +1,52 @@
+import warnings
 import logging
-from gpiozero import DistanceSensor
 
 logger = logging.getLogger(__name__)
 
 
 class Ultrasonic:
     def __init__(self, trigger_pin=27, echo_pin=22):
+
         self.trigger_pin = trigger_pin
         self.echo_pin = echo_pin
-        self.factory = self.get_factory()
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category=UserWarning, message=".*pigpiod.*"
+            )
+            warnings.filterwarnings(
+                "ignore", category=UserWarning, message=".*PWMSoftwareFallback.*"
+            )
+            self.sensor = self.init_sensor()
 
-        if self.factory:
-            self.sensor = DistanceSensor(
+    def init_sensor(self):
+        """Try to initialize the sensor with whatever pin factory is available."""
+        try:
+            from gpiozero import DistanceSensor
+
+            return DistanceSensor(
                 echo=self.echo_pin,
                 trigger=self.trigger_pin,
-                max_distance=3,
-                pin_factory=self.factory,
+                max_distance=3,  # 3-meter max range
             )
-        else:
-            self.sensor = DistanceSensor(
-                echo=self.echo_pin,
-                max_distance=3,
-                trigger=self.trigger_pin,
-            )
-            logger.warning(
-                "No pin factory detected. Falling back to default configuration."
-            )
+        except Exception as e:
+            logger.error(f"Error initializing DistanceSensor: {e}")
+            raise
 
     def get_distance(self):
+        """Return the distance in cm."""
         distance_cm = self.sensor.distance * 100
         return int(distance_cm)
 
-    @staticmethod
-    def get_factory():
-        """
-        Attempt to return a PiGPIO factory, if not available,
-        return RPiGPIOFactory. If none work, return None.
-        """
-        factory = Ultrasonic.check_pigpiod()
-        if not factory:
-            factory = Ultrasonic.check_rpigpio()
-        return factory
 
-    @staticmethod
-    def check_pigpiod():
-        """
-        Checks if pigpiod is running by attempting to connect with PiGPIOFactory.
-        If successful, returns an instance of PiGPIOFactory.
-        Otherwise, returns None.
-        """
-        try:
-
-            from gpiozero.pins.pigpio import PiGPIOFactory
-
-            factory = PiGPIOFactory()
-            return factory
-        except (OSError, IOError):
-            logger.warning("Warning: pigpiod not running.")
-            return None
-
-    @staticmethod
-    def check_rpigpio():
-        """
-        Checks if pigpiod is running by attempting to connect with PiGPIOFactory.
-        If successful, returns an instance of PiGPIOFactory.
-        Otherwise, returns None.
-        """
-        try:
-            from gpiozero.pins.rpigpio import RPiGPIOFactory
-
-            factory = RPiGPIOFactory()
-            return factory
-        except (OSError, IOError):
-            logger.warning("Warning: RPI factory not running.")
-            return None
-
-
-# Main program logic follows:
 if __name__ == '__main__':
-    pass
+    import time
+
+    ultrasonic = Ultrasonic()
+
+    try:
+        while True:
+            data = ultrasonic.get_distance()
+            logger.info("Obstacle distance is " + str(data) + "CM")
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logger.info("\nEnd of program")
