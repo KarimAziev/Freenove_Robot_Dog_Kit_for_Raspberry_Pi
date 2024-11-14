@@ -5,6 +5,9 @@ from Buzzer import BuzzerController
 from ADS7830 import ADS7830
 
 ultrasonic = Ultrasonic()
+servo = Servo()
+adc = ADS7830()
+buzzer = BuzzerController()
 
 
 def test_Ultrasonic(count=10):
@@ -15,9 +18,6 @@ def test_Ultrasonic(count=10):
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nEnd of program")
-
-
-servo = Servo()
 
 
 def test_Servo():
@@ -45,9 +45,6 @@ def test_Servo():
         print("\nEnd of program")
 
 
-adc = ADS7830()
-
-
 def test_Adc():
     try:
         for _ in range(10):
@@ -57,9 +54,6 @@ def test_Adc():
             print('\n')
     except KeyboardInterrupt:
         print("\nEnd of program")
-
-
-buzzer = BuzzerController()
 
 
 def test_Buzzer():
