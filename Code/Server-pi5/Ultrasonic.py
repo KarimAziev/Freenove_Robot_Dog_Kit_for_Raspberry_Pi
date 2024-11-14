@@ -1,5 +1,5 @@
 import logging
-
+from gpiozero import DistanceSensor
 
 logger = logging.getLogger(__name__)
 
@@ -9,17 +9,18 @@ class Ultrasonic:
         self.trigger_pin = trigger_pin
         self.echo_pin = echo_pin
         self.factory = self.get_factory()
-        from gpiozero import DistanceSensor
 
         if self.factory:
             self.sensor = DistanceSensor(
                 echo=self.echo_pin,
                 trigger=self.trigger_pin,
+                max_distance=3,
                 pin_factory=self.factory,
             )
         else:
             self.sensor = DistanceSensor(
                 echo=self.echo_pin,
+                max_distance=3,
                 trigger=self.trigger_pin,
             )
             logger.warning(
